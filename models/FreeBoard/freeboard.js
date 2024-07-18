@@ -1,4 +1,5 @@
 const { DataTypes, Sequelize } = require("sequelize");
+const { sequelize }= require("../../config/db"); // DB 연결 설정 불러오기
 
 class Freeboard extends Sequelize.Model {
     static init(sequelize) {
@@ -43,5 +44,7 @@ class Freeboard extends Sequelize.Model {
         });
     }
 }
+
+Freeboard.init(sequelize); // 모델 초기화
 
 module.exports = Freeboard;
