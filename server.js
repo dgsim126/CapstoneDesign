@@ -28,7 +28,7 @@ app.use("/", require("./routers/main"));
 
 // 자유게시판, 스터디모집게시판, 댓글
 app.use("/api/freeboard", require("./routers/FreeBoard/freeboardRoute"));
-// app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRoute"));
+app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRoute"));
 // app.use("/api/studyboard", require("./routers/StudyBoard/studyboardRoute"));
 // app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
 

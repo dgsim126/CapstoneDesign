@@ -99,13 +99,14 @@ const deletePost = asyncHandler(async (req, res) => {
         const deleteData= await FreeBoard.destroy({
             where: { key }
         });
-        if(deleteDate === 0){
-            res.status(400).json({message: "No data"});
-            return;
+        if(deleteData === 0){
+            return res.status(404).json({ message: "Post not found." });
         }
-        res.status(200);
+        res.status(200).json({ message: "Post deleted successfully." });
     }catch(error){
-        res.status(500);
+        // 서버 에러
+        console.error('Error deleting post:', error);
+        res.status(500).json({ message: "An error occurred while deleting the post." });
     }
     
 });
