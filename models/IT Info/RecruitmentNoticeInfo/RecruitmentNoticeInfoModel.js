@@ -1,0 +1,1 @@
+// RecruitmentNoticeInfo 모델
