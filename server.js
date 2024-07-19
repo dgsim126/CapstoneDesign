@@ -32,6 +32,13 @@ app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRo
 app.use("/api/studyboard", require("./routers/StudyBoard/studyboardRoute"));
 app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
 
+// 관리자
+app.use("/api/admin/freeboard", require("./routers/admin/freeboardAdminRoute"));
+app.use("/api/admin/studyboard", require("./routers/admin/studyboardAdminRoute"));
+
+
+
+
 
 // 서버 시작
 app.listen(port, () => {
