@@ -64,9 +64,21 @@ const createPost = asyncHandler(async (req, res) => {
  */
 const updatePost = asyncHandler(async (req, res) => {
     const { key } = req.params;
-    const { title, body, pic1, pic2 }= req.body;
+    const { id, title, body, pic1, pic2 }= req.body;
 
     try{
+        // 수정할 게시글 찾기
+        const post= await FreeBoard.findByPk(key);
+
+        if(!post){
+            return res.status(404).json({message: "수정할 게시글을 찾을 수 없음"});
+        }
+
+        if(post.id!==id){
+            return res.status(403).json({ message: "수정 권한이 없음" });
+        }
+
+        // 게시글 수정
         const updateData= await FreeBoard.update({
             title,
             body,
@@ -75,10 +87,6 @@ const updatePost = asyncHandler(async (req, res) => {
         },{
             where: { key }
         });
-
-        if(updateData[0]===0){
-            res.status(404).json({message: "수정할 게시글을 찾을 수 없음"});
-        }
 
         // 수정된 데이터 다시 불러오기
         const afterUpdated= await FreeBoard.findByPk(key);
