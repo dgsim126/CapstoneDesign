@@ -1,5 +1,6 @@
 // StudentSupportInfo 컨트롤러
 const asyncHandler = require("express-async-handler");
+const StudentSupportInfo = require("../../../models/ITInfo/StudentSupportInfo/studentSupportInfoModel");
 
 const test = (req, res) => {
     try{
