@@ -3,9 +3,6 @@ const express = require('express');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
-const registerRouter = require('./routers/registerRouter');
-const loginRouter = require('./routers/loginRouter');
-
 const app = express();
 const port = 8080;
 
