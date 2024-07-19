@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
+const registerRouter = require('./routers/registerRouter');
+const loginRouter = require('./routers/loginRouter');
+
 const app = express();
 const port = 8080;
 
@@ -26,6 +29,8 @@ app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
 // 기본 라우트 => routers 폴더로 이동
 app.use("/", require("./routers/main"));
 
+app.use('/api', registerRouter);
+app.use('/api', loginRouter);
 
 // 서버 시작
 app.listen(port, () => {
