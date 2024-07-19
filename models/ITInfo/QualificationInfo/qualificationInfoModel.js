@@ -1,0 +1,1 @@
+// QualificationInfo 모델
