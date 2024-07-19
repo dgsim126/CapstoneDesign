@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const db = require('../config/db');
+const db = require('../../config/db');
 
 const Users = db.sequelize.define('Users', {
   id: {
@@ -39,12 +39,12 @@ const Users = db.sequelize.define('Users', {
 });
 
 // 동기화
-Users.sync({ force: true })
-  .then(() => {
-    console.log('Users table synchronized with force: true');
-  })
-  .catch((error) => {
-    console.error('Error synchronizing Users table:', error);
-  });
+// Users.sync({ force: true })
+//   .then(() => {
+//     console.log('Users table synchronized with force: true');
+//   })
+//   .catch((error) => {
+//     console.error('Error synchronizing Users table:', error);
+//   });
 
 module.exports = Users;
