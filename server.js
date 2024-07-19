@@ -30,7 +30,7 @@ app.use("/", require("./routers/main"));
 app.use("/api/freeboard", require("./routers/FreeBoard/freeboardRoute"));
 app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRoute"));
 app.use("/api/studyboard", require("./routers/StudyBoard/studyboardRoute"));
-// app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
+app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
 
 
 // 서버 시작
