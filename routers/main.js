@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Users = require('../models/Users'); // Users 모델 가져오기.
+const Users = require('../models/User/Users'); // Users 모델 가져오기.
 const asyncHandler = require("express-async-handler");
 
 router.get('/', (req, res) => {

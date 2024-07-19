@@ -1,4 +1,4 @@
-const Users = require('../models/Users');
+const Users = require('../../models/User/Users');
 const bcrypt = require('bcrypt'); // 비밀번호 해싱을 위해 필요
 
 exports.register = async (req, res) => {
