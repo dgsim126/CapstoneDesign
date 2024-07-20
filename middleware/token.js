@@ -5,12 +5,12 @@ const jwtSecret = process.env.JWT_SECRET;
 const verifyToken = (req, res, next) => {
     const token = req.cookies.token || req.headers['authorization'];
     if (!token) {
-        return res.status(401).json({ message: "Access Denied. No Token Provided. " });
+        return res.status(401).json({ message: "Access Denied. No Token Provided." });
     }
 
     try {
         const decoded = jwt.verify(token, jwtSecret);
-        req.user = { id: decoded.id };
+        req.user = { userID: decoded.userID, email: decoded.email };
         next();
     } catch (error) {
         res.status(400).json({ message: "Invalid Token" });
