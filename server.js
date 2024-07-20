@@ -35,6 +35,9 @@ app.use('/api/register', require('./routers/User/registerRoute'));
 app.use('/api', require('./routers/User/loginRoute'));
 app.use('/api/profile', require('./routers/User/profileRoute'));
 
+// 기업 목록, 기업 상세
+app.use("/api/company", require('./routers/Company/companyRoute'));
+
 // 자유게시판, 스터디모집게시판, 댓글
 app.use("/api/freeboard", require("./routers/FreeBoard/freeboardRoute"));
 app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRoute"));
