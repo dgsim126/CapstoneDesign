@@ -3,12 +3,14 @@ const express = require('express');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
+const User = require('./models/User/user');
+const Company = require('./models/Company/company');
+
 const app = express();
 const port = 8080;
 
 // 데이터베이스 연결
-sequelize
-.sync({ force: false })
+sequelize.sync({ force: true })
 .then(()=>{
     console.log('데이터베이스 연결 성공');
 }).catch(err=>{
@@ -25,6 +27,10 @@ app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
 
 // 기본 라우트 => routers 폴더로 이동
 app.use("/", require("./routers/main"));
+
+// 회원가입, 로그인
+app.use('/api/register', require('./routers/User/registerRoute'));
+app.use('/api/login', require('./routers/User/loginRoute'));
 
 // 자유게시판, 스터디모집게시판, 댓글
 app.use("/api/freeboard", require("./routers/FreeBoard/freeboardRoute"));
