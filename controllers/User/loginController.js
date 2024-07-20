@@ -21,7 +21,7 @@ const login = async (req, res) => {
     }
 
     // JWT 토큰 생성
-    const payload = { userID: user.userID };
+    const payload = { userID: user.userID, email: user.email };
     const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
 
     // JWT 토큰을 쿠키에 설정
