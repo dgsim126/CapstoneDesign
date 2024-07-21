@@ -50,7 +50,8 @@ const showAll = asyncHandler(async (req, res) => {
  */
 const createComment = asyncHandler(async (req, res) => {
     const { studyboardkey } = req.params;
-    const { id, comment, isSecret } = req.body; // id값은 쿠키를 통해 받아오도록 수정할 것
+    const { comment, isSecret } = req.body; 
+    const id= "user123" // id값은 쿠키를 통해 받아오도록 수정할 것
 
     try {
         const newData = await StudyboardComment.create({
@@ -72,7 +73,7 @@ const createComment = asyncHandler(async (req, res) => {
  */
 const deleteComment = asyncHandler(async (req, res) => {
     const { studyboardkey, commentkey } = req.params;
-    const { id } = req.body; // id값은 쿠키를 통해 받아오도록 수정할 것
+    const id= "user12344"; // id값은 쿠키를 통해 받아오도록 수정할 것
 
     try {
         const comment = await StudyboardComment.findOne({
