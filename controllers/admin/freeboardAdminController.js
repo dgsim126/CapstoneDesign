@@ -50,4 +50,34 @@ const deletePost = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { showAll, deletePost };
+/**
+ * 특정 게시글 댓글 삭제
+ * DELETE /api/admin/freeboard/delete/:freeboardkey/:commentkey
+ */
+const deleteComment = asyncHandler(async (req, res) => {
+    const { freeboardkey, commentkey }= req.params;
+
+    try{
+        const comment= await FreeBoardComment.findOne({
+            where:{
+                commentkey: commentkey,
+                freeboardkey: freeboardkey
+            }
+        });
+        console.log(commentkey, freeboardkey);
+
+        // 댓글이 없는 경우
+        if(!comment){
+            return res.status(404).json({ message: "Comment not found." });
+        }
+
+        // 댓글 삭제
+        await comment.destroy();
+        res.status(200).json({message: "comment deleted"});
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: "An error occurred while deleting the comment." });
+    }
+});
+
+module.exports = { showAll, deletePost, deleteComment };
