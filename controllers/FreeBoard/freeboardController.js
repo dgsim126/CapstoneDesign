@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const FreeBoard= require("../../models/FreeBoard/freeboard");
+const FreeBoardComment = require("../../models/FreeBoard/freeboardComment"); // 댓글 모델 추가
 // const bcrypt = require("bcrypt");
 
 /**
@@ -120,6 +121,13 @@ const deletePost = asyncHandler(async (req, res) => {
         if (post.id !== id) {
             return res.status(403).json({ message: "수정 권한이 없음." });
         }
+
+        // ----- 추가된 부분 -----
+        // 연결된 댓글 모두 삭제
+        await FreeBoardComment.destroy({
+            where: { freeboardkey: key }
+        });
+        // ----- 추가된 부분 끝 -----
 
         // 게시글 삭제
         await post.destroy();

@@ -44,12 +44,12 @@ class Freeboard extends Sequelize.Model {
         });
     }
     // ----- 추가한 부분 ------
-    // static associate(models) {
-    //     this.hasMany(models.FreeboardComment, {
-    //         foreignKey: 'freeboardkey',
-    //         onDelete: 'CASCADE'
-    //     });
-    // }
+    static associate(models) {
+        this.hasMany(models.FreeboardComment, {
+            foreignKey: 'freeboardkey',
+            onDelete: 'CASCADE'
+        });
+    }
     // ----- 추가한 부분 ------
 }
 
