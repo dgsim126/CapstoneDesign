@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany } = require('../../controllers/Company/companyController');
+const { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany, deleteCompany } = require('../../controllers/Company/companyController');
 const verifyToken = require('../../middleware/token');
 
 // GET api/company
@@ -17,5 +17,8 @@ router.delete('/:companyID/scrap', verifyToken, deleteScrap);
 
 // POST api/company/admin
 router.post('/admin', createCompany);
+
+// DELETE api/company/admin/:companyID
+router.delete('/admin/:companyID', deleteCompany);
 
 module.exports = router;

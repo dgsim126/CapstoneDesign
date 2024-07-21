@@ -92,7 +92,7 @@ const deleteScrap = asyncHandler(async (req, res) => {
 });
 
 // POST api/company/admin
-// ⭐관리자 - 기업 정보 직접 추가
+// ⭐관리자 - 기업 목록 추가
 const createCompany = asyncHandler(async (req, res) => {
     const {
         companyName,
@@ -143,4 +143,20 @@ const createCompany = asyncHandler(async (req, res) => {
     res.status(201).json(newCompany);
 });
 
-module.exports = { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany };
+// DELETE api/company/admin/:companyID
+// ⭐관리자 - 기업 목록 삭제
+const deleteCompany = asyncHandler(async (req, res) => {
+    const { companyID } = req.params;
+
+    const company = await Company.findByPk(companyID);
+    if (!company) {
+        return res.status(404).json({ message: 'Company not found' });
+    }
+
+    await Scrap.destroy({ where: { companyID: companyID } });
+    await company.destroy();
+    
+    res.status(204).send(); // No Content
+});
+
+module.exports = { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany, deleteCompany };
