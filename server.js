@@ -6,6 +6,11 @@ const { sequelize } = require("./config/db");
 
 const User = require('./models/User/user');
 const Company = require('./models/Company/company');
+const Scrap = require('./models/Scrap/scrap');
+
+User.associate({ Scrap });
+Company.associate({ Scrap });
+Scrap.associate({ User, Company });
 
 const app = express();
 const port = 8080;
@@ -35,7 +40,7 @@ app.use('/api/register', require('./routers/User/registerRoute'));
 app.use('/api', require('./routers/User/loginRoute'));
 app.use('/api/profile', require('./routers/User/profileRoute'));
 
-// 기업 목록, 기업 상세
+// 기업 목록, 기업 상세, 관심기업 스크랩
 app.use("/api/company", require('./routers/Company/companyRoute'));
 
 // 자유게시판, 스터디모집게시판, 댓글

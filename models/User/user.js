@@ -44,6 +44,10 @@ class User extends Sequelize.Model {
       collate: 'utf8_general_ci'
     });
   }
+
+  static associate(models) {
+    this.hasMany(models.Scrap, { foreignKey: 'userID', onDelete: 'CASCADE' });
+  }
 }
 
 User.init(sequelize);

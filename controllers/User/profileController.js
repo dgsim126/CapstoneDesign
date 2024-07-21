@@ -1,12 +1,22 @@
 const asyncHandler = require("express-async-handler");
-const User = require('../../models/User/user');
 const bcrypt = require("bcrypt");
+const User = require('../../models/User/user');
+const Company = require('../../models/Company/company');
+const Scrap = require('../../models/Scrap/scrap');
 
 // GET /api/profile
 const getProfile = asyncHandler(async (req, res) => {
     const id = req.user.userID;  // 모델의 primary key 필드명 사용
     const user = await User.findByPk(id, {
-        attributes: { exclude: ['userID', 'password'] }
+        attributes: { exclude: ['password'] },
+        include: [{
+            model: Scrap,
+            attributes: ['companyID'],
+            include: [{
+                model: Company,
+                attributes: ['companyName', 'establish', 'logo']
+            }]
+        }]
     });
     if (!user) {
         res.status(404).send('User not found');
