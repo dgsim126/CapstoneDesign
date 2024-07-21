@@ -111,6 +111,9 @@ class QualificationInfoModel extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
+    static associate(models) {
+        this.hasMany(models.Scrap, { foreignKey: 'qualificationInfoKey', onDelete: 'CASCADE' });
+    }
 }
 
 QualificationInfoModel.init(sequelize); // 데이터베이스에 적용

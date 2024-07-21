@@ -7,16 +7,31 @@ const { sequelize } = require("./config/db");
 const User = require('./models/User/user');
 const Company = require('./models/Company/company');
 const Scrap = require('./models/Scrap/scrap');
+const StudentSupportInfo = require('./models/ITInfo/StudentSupportInfo/studentSupportInfoModel');
+const QualificationInfo = require('./models/ITInfo/QualificationInfo/qualificationInfoModel');
+const RecruitmentNoticeInfo = require('./models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
 
+// 모델 초기화 => 초기 한 번만 진행하면 scrap 테이블 갱신됨
+// User.init(sequelize);
+// Company.init(sequelize);
+// Scrap.init(sequelize);
+// StudentSupportInfo.init(sequelize);
+// QualificationInfo.init(sequelize);
+// RecruitmentNoticeInfo.init(sequelize);
+
+// 모델 간의 관계 설정
 User.associate({ Scrap });
 Company.associate({ Scrap });
-Scrap.associate({ User, Company });
+Scrap.associate({ User, Company, StudentSupportInfo, QualificationInfo, RecruitmentNoticeInfo });
+StudentSupportInfo.associate({ Scrap });
+QualificationInfo.associate({ Scrap });
+RecruitmentNoticeInfo.associate({ Scrap });
 
 const app = express();
 const port = 8080;
 
 // 데이터베이스 연결
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
 .then(()=>{
     console.log('데이터베이스 연결 성공');
 }).catch(err=>{

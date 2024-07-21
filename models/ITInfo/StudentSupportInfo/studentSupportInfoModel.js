@@ -87,6 +87,9 @@ class StudentSupportInfoModel extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
+    static associate(models) {
+        this.hasMany(models.Scrap, { foreignKey: 'studentSupportInfoKey', onDelete: 'CASCADE' });
+    }
 }
 
 StudentSupportInfoModel.init(sequelize); // 데이터베이스에 적용

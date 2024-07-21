@@ -95,4 +95,4 @@ const createInfoAdmin = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { showAllList, showDetailInfo, createInfoAdmin }; // 나중에 showDetailInfo 추가
+module.exports = { showAllList, showDetailInfo, createInfoAdmin };

@@ -119,6 +119,9 @@ class RecruitmentNoticeInfoModel extends Sequelize.Model {
             collate: 'utf8_general_ci'
         });
     }
+    static associate(models) {
+        this.hasMany(models.Scrap, { foreignKey: 'recruitmentNoticeInfoKey', onDelete: 'CASCADE' });
+    }
 }
 
 RecruitmentNoticeInfoModel.init(sequelize); // 데이터베이스에 적용
