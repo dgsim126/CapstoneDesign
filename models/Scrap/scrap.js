@@ -2,6 +2,9 @@ const { DataTypes, Sequelize } = require('sequelize');
 const { sequelize } = require('../../config/db');
 const User = require('../User/user');
 const Company = require('../Company/company');
+const StudentSupportInfo = require('../ITInfo/StudentSupportInfo/studentSupportInfoModel');
+const QualificationInfo = require('../ITInfo/QualificationInfo/qualificationInfoModel');
+const RecruitmentNoticeInfo = require('../ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
 
 class Scrap extends Sequelize.Model {
     static init(sequelize) {
@@ -26,6 +29,30 @@ class Scrap extends Sequelize.Model {
                     key: 'companyID'
                 },
                 allowNull: false
+            },
+            studentSupportInfoKey: {
+                type: DataTypes.INTEGER,
+                references: {
+                    model: StudentSupportInfo,
+                    key: 'key'
+                },
+                allowNull: true // 필요에 따라 true 또는 false 설정
+            },
+            qualificationInfoKey: {
+                type: DataTypes.INTEGER,
+                references: {
+                    model: QualificationInfo,
+                    key: 'key'
+                },
+                allowNull: true
+            },
+            recruitmentNoticeInfoKey: {
+                type: DataTypes.INTEGER,
+                references: {
+                    model: RecruitmentNoticeInfo,
+                    key: 'key'
+                },
+                allowNull: true
             }
         }, {
             sequelize,
@@ -37,7 +64,7 @@ class Scrap extends Sequelize.Model {
             indexes: [
                 {
                     unique: true,
-                    fields: ['userID', 'companyID']
+                    fields: ['userID', 'companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey']
                 }
             ]
         });
@@ -46,6 +73,9 @@ class Scrap extends Sequelize.Model {
     static associate(models) {
         this.belongsTo(models.User, { foreignKey: 'userID', onDelete: 'CASCADE' });
         this.belongsTo(models.Company, { foreignKey: 'companyID', onDelete: 'CASCADE' });
+        this.belongsTo(models.StudentSupportInfo, { foreignKey: 'studentSupportInfoKey', onDelete: 'CASCADE' });
+        this.belongsTo(models.QualificationInfo, { foreignKey: 'qualificationInfoKey', onDelete: 'CASCADE' });
+        this.belongsTo(models.RecruitmentNoticeInfo, { foreignKey: 'recruitmentNoticeInfoKey', onDelete: 'CASCADE' });
     }
 }
 
