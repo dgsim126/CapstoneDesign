@@ -1,7 +1,6 @@
 // RecruitmentNoticeInfo 라우트코드
 const express = require('express');
 const router = express.Router();
-const asyncHandler = require("express-async-handler");
 const {
     test
 } = require('../../../controllers/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoController');
