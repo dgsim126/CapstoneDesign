@@ -28,7 +28,7 @@ class Scrap extends Sequelize.Model {
                     model: Company,
                     key: 'companyID'
                 },
-                allowNull: false
+                allowNull: true
             },
             studentSupportInfoKey: {
                 type: DataTypes.INTEGER,
@@ -64,7 +64,8 @@ class Scrap extends Sequelize.Model {
             indexes: [
                 {
                     unique: true,
-                    fields: ['userID', 'companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey']
+                    fields: ['userID', 'companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey'],
+                    name: 'unique_scrap_index' // 인덱스 이름 지정
                 }
             ]
         });
