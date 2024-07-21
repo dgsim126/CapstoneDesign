@@ -6,6 +6,8 @@ const { sequelize } = require("./config/db");
 // 모델 가져오기
 const Freeboard = require('./models/FreeBoard/freeboard');
 const FreeboardComment = require('./models/FreeBoard/freeboardComment');
+const Studyboard = require('./models/StudyBoard/studyboard');
+const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
 const app = express();
 const port = 8080;
@@ -19,6 +21,8 @@ sequelize
     // 모델 관계 설정(cascade를 위해)
     Freeboard.associate({ FreeboardComment });
     FreeboardComment.associate({ Freeboard });
+    Studyboard.associate({ StudyboardComment });
+    StudyboardComment.associate({ Studyboard });
 
 }).catch(err=>{
     console.log(err);

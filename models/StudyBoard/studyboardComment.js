@@ -1,7 +1,7 @@
 // models/FreeboardComment.js
 const { DataTypes, Sequelize } = require('sequelize');
 const { sequelize } = require('../../config/db'); // DB 연결 설정 불러오기
-const Studyboard = require('./studyboard'); // Freeboard 모델 불러오기
+const Studyboard = require('./studyboard'); // Studyboard 모델 불러오기
 
 class StudyboardComment extends Sequelize.Model {
     static init(sequelize) {
@@ -47,12 +47,14 @@ class StudyboardComment extends Sequelize.Model {
         });
     }
 
+    // ----- 추가한 부분 ------
     static associate(models) {
-        this.belongsTo(models.Freeboard, {
-            foreignKey: 'studyboardkey', 
+        this.belongsTo(models.Studyboard, {
+            foreignKey: 'studyboardkey',
             onDelete: 'CASCADE'
         });
     }
+    // ----- 추가한 부분 끝 ------
 }
 
 StudyboardComment.init(sequelize);

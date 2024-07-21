@@ -37,12 +37,20 @@ class Studyboard extends Sequelize.Model {
         }, {
             sequelize,
             timestamps: false,
-            modelName: 'Syudyboard',
+            modelName: 'Studyboard',
             tableName: 'studyboard',
             charset: 'utf8',
             collate: 'utf8_general_ci'
         });
     }
+    // ----- 추가한 부분 ------
+    static associate(models) {
+        this.hasMany(models.StudyboardComment, {
+            foreignKey: 'studyboardkey',
+            onDelete: 'CASCADE'
+        });
+    }
+    // ----- 추가한 부분 ------
 
 }
 
