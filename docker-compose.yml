@@ -13,3 +13,4 @@ services:
       - ./data/var/lib/mysql:/var/lib/mysql    # 데이터를 저장할 로컬 디렉토리
     ports:
       - "3306:3306"                             # 포트 매핑 설정
+    # command: mariadbd --innodb_force_recovery=1 # 복구용
