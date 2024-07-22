@@ -42,12 +42,14 @@ class FreeboardComment extends Sequelize.Model {
         });
     }
 
+    // ----- 추가한 부분 ------
     static associate(models) {
         this.belongsTo(models.Freeboard, {
-            foreignKey: 'freeboardkey', // 해당 부분 freeboardkey로 바꿔야 하는지?
+            foreignKey: 'freeboardkey',
             onDelete: 'CASCADE'
         });
     }
+    // ----- 추가한 부분 끝 ------
 }
 
 FreeboardComment.init(sequelize);

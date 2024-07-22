@@ -3,20 +3,19 @@ const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const { 
     showAll,
-    createComment,
+    deletePost,
     deleteComment
-} = require('../../controllers/StudyBoard/studyboardCommentController');
+} = require('../../controllers/admin/studyboardAdminController');
 
 // const verifyToken = require('../middleware/token');
 
-// 특정 게시글 댓글 전체 가져오기
-router.get('/:studyboardkey', showAll);
+// 모든 게시글 가져오기
+router.get('/', showAll);
 
-// 특정 게시글 댓글 생성
-router.post('/create/:studyboardkey', asyncHandler(createComment));
+// 게시글 삭제
+router.delete('/delete/:key', asyncHandler(deletePost));
 
-// 특정 게시글 댓글 삭제
+// 댓글 삭제
 router.delete('/delete/:studyboardkey/:commentkey', asyncHandler(deleteComment));
-
 
 module.exports = router;
