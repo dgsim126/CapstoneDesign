@@ -10,14 +10,22 @@ const Scrap = require('./models/Scrap/scrap');
 const StudentSupportInfo = require('./models/ITInfo/StudentSupportInfo/studentSupportInfoModel');
 const QualificationInfo = require('./models/ITInfo/QualificationInfo/qualificationInfoModel');
 const RecruitmentNoticeInfo = require('./models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
+const Freeboard = require('./models/FreeBoard/freeboard');
+const FreeboardComment = require('./models/FreeBoard/freeboardComment');
+const Studyboard = require('./models/StudyBoard/studyboard');
+const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
 // 모델 초기화 => 초기 한 번만 진행하면 scrap 테이블 갱신됨
-// User.init(sequelize);
-// Company.init(sequelize);
-// Scrap.init(sequelize);
-// StudentSupportInfo.init(sequelize);
-// QualificationInfo.init(sequelize);
-// RecruitmentNoticeInfo.init(sequelize);
+User.init(sequelize);
+Company.init(sequelize);
+Scrap.init(sequelize);
+StudentSupportInfo.init(sequelize);
+QualificationInfo.init(sequelize);
+RecruitmentNoticeInfo.init(sequelize);
+Freeboard.init(sequelize);
+FreeboardComment.init(sequelize);
+Studyboard.init(sequelize);
+StudyboardComment.init(sequelize);
 
 // 모델 간의 관계 설정
 User.associate({ Scrap });
@@ -26,14 +34,6 @@ Scrap.associate({ User, Company, StudentSupportInfo, QualificationInfo, Recruitm
 StudentSupportInfo.associate({ Scrap });
 QualificationInfo.associate({ Scrap });
 RecruitmentNoticeInfo.associate({ Scrap });
-
-// 모델 가져오기
-const Freeboard = require('./models/FreeBoard/freeboard');
-const FreeboardComment = require('./models/FreeBoard/freeboardComment');
-const Studyboard = require('./models/StudyBoard/studyboard');
-const StudyboardComment = require('./models/StudyBoard/studyboardComment');
-
-// 모델 관계 설정(cascade를 위해)
 Freeboard.associate({ FreeboardComment });
 FreeboardComment.associate({ Freeboard });
 Studyboard.associate({ StudyboardComment });
@@ -45,7 +45,7 @@ const port = 8080;
 
 // 데이터베이스 연결
 sequelize
-.sync({ force: false }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
+.sync({ force: true }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
 .then(()=>{
     console.log('데이터베이스 연결 성공');
     
