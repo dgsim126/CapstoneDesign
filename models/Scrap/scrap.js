@@ -64,7 +64,8 @@ class Scrap extends Sequelize.Model {
             indexes: [
                 {
                     unique: true,
-                    fields: ['userID', 'companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey']
+                    fields: ['userID', 'companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey'],
+                    name: 'unique_scrap_index' // 인덱스 이름 지정
                 }
             ]
         });
