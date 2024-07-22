@@ -9,6 +9,13 @@ const FreeboardComment = require('./models/FreeBoard/freeboardComment');
 const Studyboard = require('./models/StudyBoard/studyboard');
 const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
+// 모델 관계 설정(cascade를 위해)
+Freeboard.associate({ FreeboardComment });
+FreeboardComment.associate({ Freeboard });
+Studyboard.associate({ StudyboardComment });
+StudyboardComment.associate({ Studyboard });
+
+
 const app = express();
 const port = 8080;
 
@@ -17,13 +24,7 @@ sequelize
 .sync({ force: false }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
 .then(()=>{
     console.log('데이터베이스 연결 성공');
-
-    // 모델 관계 설정(cascade를 위해)
-    Freeboard.associate({ FreeboardComment });
-    FreeboardComment.associate({ Freeboard });
-    Studyboard.associate({ StudyboardComment });
-    StudyboardComment.associate({ Studyboard });
-
+    
 }).catch(err=>{
     console.log(err);
 });
