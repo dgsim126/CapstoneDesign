@@ -28,7 +28,7 @@ class Scrap extends Sequelize.Model {
                     model: Company,
                     key: 'companyID'
                 },
-                allowNull: false
+                allowNull: true
             },
             studentSupportInfoKey: {
                 type: DataTypes.INTEGER,

@@ -1,6 +1,7 @@
 // StudentSupportInfo 컨트롤러
 const asyncHandler = require("express-async-handler");
 const StudentSupportInfo = require("../../../models/ITInfo/StudentSupportInfo/studentSupportInfoModel");
+const Scrap = require("../../../models/Scrap/scrap");
 
 /**
  * 모든 목록 가져오기 [학생지원]
@@ -39,6 +40,53 @@ const showDetailInfo = asyncHandler(async (req, res) => {
         console.error('Error fetching student support info:', error);
         res.status(500).send('Internal Server Error');
     }
+});
+
+// POST /api/studentSupportInfo/:studentSupportInfoKey/scrap
+// 관심 학생지원 스크랩
+const scrapStudentSupportInfo = asyncHandler(async (req, res) => {
+    const userID = req.user.userID; // 로그인된 유저 ID 가져오기
+    const { studentSupportInfoKey } = req.params;
+
+    // 스크랩 중복 체크
+    const existingScrap = await Scrap.findOne({
+        where: {
+            userID,
+            studentSupportInfoKey
+        }
+    });
+    if (existingScrap) {
+        return res.status(400).json({ message: 'Already scrapped this student support info' });
+    }
+
+    // 스크랩 생성
+    await Scrap.create({
+        userID,
+        studentSupportInfoKey
+    });
+
+    res.status(201).json({ message: 'Student support info scrapped successfully' });
+});
+
+// DELETE /api/studentSupportInfo/:studentSupportInfoKey/scrap
+// 스크랩 삭제
+const deleteStudentSupportScrap = asyncHandler(async (req, res) => {
+    const { studentSupportInfoKey } = req.params;
+    const userID = req.user.userID;
+
+    const scrap = await Scrap.findOne({
+        where: {
+            studentSupportInfoKey,
+            userID
+        }
+    });
+
+    if (!scrap) {
+        return res.status(404).send('Scrap not found');
+    }
+
+    await scrap.destroy();
+    res.status(200).send('Scrap deleted successfully');
 });
 
 
@@ -95,4 +143,23 @@ const createInfoAdmin = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { showAllList, showDetailInfo, createInfoAdmin };
+/**
+ * ⭐ 정보글 관리자가 직접 삭제 [학생지원]
+ * POST /api/studentSupportInfo/admin/delete/:key
+ */
+const deleteInfoAdmin = asyncHandler(async (req, res) => {
+    const { key } = req.params;
+
+    const deleteInfo = await StudentSupportInfo.findByPk(key);
+    if (!deleteInfo) {
+        return res.status(404).json({ message: 'Info not found' });
+    }
+
+    await Scrap.destroy({ where: { studentSupportInfoKey: key } }); // 나중에 추가
+    await deleteInfo.destroy();
+    
+    res.status(204).send();
+});
+
+module.exports = { showAllList, showDetailInfo, scrapStudentSupportInfo,
+    deleteStudentSupportScrap, createInfoAdmin, deleteInfoAdmin };
