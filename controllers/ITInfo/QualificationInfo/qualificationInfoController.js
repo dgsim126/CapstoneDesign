@@ -1,6 +1,7 @@
 // QualificationInfo 컨트롤러
 const asyncHandler = require("express-async-handler");
 const QualificationInfo = require("../../../models/ITInfo/QualificationInfo/qualificationInfoModel");
+const Scrap = require("../../../models/Scrap/scrap");
 
 /**
  * 모든 목록 가져오기 [자격증]
@@ -41,6 +42,56 @@ const showDetailInfo = asyncHandler(async (req, res) => {
     }
 });
 
+/**
+ * POST /api/qualificationInfo/:qualificationInfoKey/scrap
+ * 관심 자격증 스크랩
+ */
+const scrapQualificationInfo = asyncHandler(async (req, res) => {
+    const userID = req.user.userID; // 로그인된 유저 ID 가져오기
+    const { qualificationInfoKey } = req.params;
+
+    // 스크랩 중복 체크
+    const existingScrap = await Scrap.findOne({
+        where: {
+            userID,
+            qualificationInfoKey
+        }
+    });
+    if (existingScrap) {
+        return res.status(400).json({ message: 'Already scrapped this qualification info' });
+    }
+
+    // 스크랩 생성
+    await Scrap.create({
+        userID,
+        qualificationInfoKey
+    });
+
+    res.status(201).json({ message: 'Qualification info scrapped successfully' });
+});
+
+/**
+ * DELETE /api/qualificationInfo/:qualificationInfoKey/scrap
+ * 스크랩 삭제
+ */
+const deleteQualificationScrap = asyncHandler(async (req, res) => {
+    const { qualificationInfoKey } = req.params;
+    const userID = req.user.userID;
+
+    const scrap = await Scrap.findOne({
+        where: {
+            qualificationInfoKey,
+            userID
+        }
+    });
+
+    if (!scrap) {
+        return res.status(404).send('Scrap not found');
+    }
+
+    await scrap.destroy();
+    res.status(200).send('Scrap deleted successfully');
+});
 
 /**
  * ⭐ 정보글 관리자가 직접 작성 [자격증]
@@ -107,4 +158,24 @@ const createInfoAdmin = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { showAllList, showDetailInfo, createInfoAdmin };
+/**
+ * ⭐ 정보글 관리자가 직접 삭제 [자격증]
+ * POST /api/qualificationInfo/admin/delete/:key
+ */
+const deleteInfoAdmin = asyncHandler(async (req, res) => {
+    const { key } = req.params;
+
+    const deleteInfo = await QualificationInfo.findByPk(key);
+    if (!deleteInfo) {
+        return res.status(404).json({ message: 'Info not found' });
+    }
+
+    // 관련 스크랩 삭제
+    await Scrap.destroy({ where: { qualificationInfoKey: key } });
+    await deleteInfo.destroy();
+    
+    res.status(204).send();
+});
+
+module.exports = { showAllList, showDetailInfo, scrapQualificationInfo,
+    deleteQualificationScrap, createInfoAdmin, deleteInfoAdmin };

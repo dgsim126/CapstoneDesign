@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const FreeBoard= require("../../models/FreeBoard/freeboard");
+const FreeBoardComment = require("../../models/FreeBoard/freeboardComment"); // 댓글 모델 추가
 // const bcrypt = require("bcrypt");
 
 /**
@@ -40,8 +41,9 @@ const showDetail = asyncHandler(async (req, res) => {
  * POST /api/freeboard/create
  */
 const createPost = asyncHandler(async (req, res) => {
-    const { id, title, body, pic1, pic2 }= req.body;
-    // id값은 쿠키를 통해 받아오도록 수정할 것
+    const { title, body, pic1, pic2 }= req.body;
+    const id= "user123"; // id값은 쿠키를 통해 받아오도록 수정할 것
+    
     try{
         const newData= await FreeBoard.create({
             id,
@@ -51,10 +53,9 @@ const createPost = asyncHandler(async (req, res) => {
             pic2
         })
         res.status(201).json(newData);
-        // 새로 생성된 레코드를 JSON 형태로 반환 (기본키와 기본값 포함)
-        // res.status(201).json(newPost.toJSON());
     }catch(error){
-        res.status(500);
+        console.error("Error creating post:", error);
+        res.status(500).json({ message: "게시글 작성 중 오류." });
     }
 });
 
@@ -65,8 +66,21 @@ const createPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { key } = req.params;
     const { title, body, pic1, pic2 }= req.body;
+    const id= "user123";
 
     try{
+        // 수정할 게시글 찾기
+        const post= await FreeBoard.findByPk(key);
+
+        if(!post){
+            return res.status(404).json({message: "수정할 게시글을 찾을 수 없음."});
+        }
+
+        if(post.id!==id){
+            return res.status(403).json({ message: "수정 권한이 없음." });
+        }
+
+        // 게시글 수정
         const updateData= await FreeBoard.update({
             title,
             body,
@@ -75,10 +89,6 @@ const updatePost = asyncHandler(async (req, res) => {
         },{
             where: { key }
         });
-
-        if(updateData[0]===0){
-            res.status(404).json({message: "수정할 게시글을 찾을 수 없음"});
-        }
 
         // 수정된 데이터 다시 불러오기
         const afterUpdated= await FreeBoard.findByPk(key);
@@ -94,21 +104,39 @@ const updatePost = asyncHandler(async (req, res) => {
  */
 const deletePost = asyncHandler(async (req, res) => {
     const { key } = req.params;
+    const id = "user123"; // 현재 로그인한 사용자의 ID
 
-    try{
-        const deleteData= await FreeBoard.destroy({
+    try {
+        // 삭제하려는 게시글 찾기
+        const post = await FreeBoard.findOne({
             where: { key }
         });
-        if(deleteData === 0){
-            return res.status(404).json({ message: "Post not found." });
+
+        // 게시글이 없는 경우
+        if (!post) {
+            return res.status(404).json({ message: "수정할 게시글을 찾을 수 없음." });
         }
-        res.status(200).json({ message: "Post deleted successfully." });
-    }catch(error){
+
+        // 게시글 작성자와 현재 사용자가 다른 경우
+        if (post.id !== id) {
+            return res.status(403).json({ message: "수정 권한이 없음." });
+        }
+
+        // ----- 추가된 부분 -----
+        // 연결된 댓글 모두 삭제
+        await FreeBoardComment.destroy({
+            where: { freeboardkey: key }
+        });
+        // ----- 추가된 부분 끝 -----
+
+        // 게시글 삭제
+        await post.destroy();
+        res.status(200).json({ message: "삭제 완료." });
+    } catch (error) {
         // 서버 에러
         console.error('Error deleting post:', error);
-        res.status(500).json({ message: "An error occurred while deleting the post." });
+        res.status(500).json({ message: "서버 에러." });
     }
-    
 });
 
 module.exports = { showAll, showDetail, createPost, updatePost, deletePost };

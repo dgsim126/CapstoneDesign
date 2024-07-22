@@ -10,6 +10,10 @@ const Scrap = require('./models/Scrap/scrap');
 const StudentSupportInfo = require('./models/ITInfo/StudentSupportInfo/studentSupportInfoModel');
 const QualificationInfo = require('./models/ITInfo/QualificationInfo/qualificationInfoModel');
 const RecruitmentNoticeInfo = require('./models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
+const Freeboard = require('./models/FreeBoard/freeboard');
+const FreeboardComment = require('./models/FreeBoard/freeboardComment');
+const Studyboard = require('./models/StudyBoard/studyboard');
+const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
 // 모델 초기화 => 초기 한 번만 진행하면 scrap 테이블 갱신됨
 User.init(sequelize);
@@ -18,6 +22,10 @@ Scrap.init(sequelize);
 StudentSupportInfo.init(sequelize);
 QualificationInfo.init(sequelize);
 RecruitmentNoticeInfo.init(sequelize);
+Freeboard.init(sequelize);
+FreeboardComment.init(sequelize);
+Studyboard.init(sequelize);
+StudyboardComment.init(sequelize);
 
 // 모델 간의 관계 설정
 User.associate({ Scrap });
@@ -26,14 +34,21 @@ Scrap.associate({ User, Company, StudentSupportInfo, QualificationInfo, Recruitm
 StudentSupportInfo.associate({ Scrap });
 QualificationInfo.associate({ Scrap });
 RecruitmentNoticeInfo.associate({ Scrap });
+Freeboard.associate({ FreeboardComment });
+FreeboardComment.associate({ Freeboard });
+Studyboard.associate({ StudyboardComment });
+StudyboardComment.associate({ Studyboard });
+
 
 const app = express();
 const port = 8080;
 
 // 데이터베이스 연결
-sequelize.sync({ force: true })
+sequelize
+.sync({ force: true }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
 .then(()=>{
     console.log('데이터베이스 연결 성공');
+    
 }).catch(err=>{
     console.log(err);
 });
@@ -55,14 +70,21 @@ app.use('/api/register', require('./routers/User/registerRoute'));
 app.use('/api', require('./routers/User/loginRoute'));
 app.use('/api/profile', require('./routers/User/profileRoute'));
 
-// 기업 목록, 기업 상세, 관심기업 스크랩, 관리자 - 기업 추가, 삭제
+// 기업 목록, 기업 상세, 관심기업 스크랩
 app.use("/api/company", require('./routers/Company/companyRoute'));
 
 // 자유게시판, 스터디모집게시판, 댓글
 app.use("/api/freeboard", require("./routers/FreeBoard/freeboardRoute"));
 app.use("/api/freeboardComment", require("./routers/FreeBoard/freeboardCommentRoute"));
-// app.use("/api/studyboard", require("./routers/StudyBoard/studyboardRoute"));
-// app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
+app.use("/api/studyboard", require("./routers/StudyBoard/studyboardRoute"));
+app.use("/api/studyboardComment", require("./routers/StudyBoard/studyboardCommentRoute"));
+
+// 관리자
+app.use("/api/admin/freeboard", require("./routers/admin/freeboardAdminRoute"));
+app.use("/api/admin/studyboard", require("./routers/admin/studyboardAdminRoute"));
+
+
+
 
 // IT Info [학생지원, 자격증, 채용공고]
 app.use("/api/studentSupportInfo", require("./routers/ITInfo/StudentSupportInfo/studentSupportInfoRoute"));
