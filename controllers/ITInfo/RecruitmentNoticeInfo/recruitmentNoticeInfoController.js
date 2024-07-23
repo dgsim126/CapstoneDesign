@@ -1,6 +1,7 @@
 // RecruitmentNoticeInfo 컨트롤러
 const asyncHandler = require("express-async-handler");
 const RecruitmentNoticeInfo = require("../../../models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel");
+const Company= require("../../../models/Company/company");
 const Scrap = require("../../../models/Scrap/scrap");
 const { Sequelize } = require('sequelize');
 
@@ -33,6 +34,7 @@ const showAllList = asyncHandler(async (req, res) => {
     }
 });
 
+// --------------------------------------------------------------------------------------------------------
 /**
  * 정보글 상세 조회 [채용공고]
  * GET /api/recruitmentNoticeInfo/:key
@@ -59,12 +61,20 @@ const showDetailInfo = asyncHandler(async (req, res) => {
         if (!recruitmentNoticeInfo) {
             return res.status(404).json({ message: 'Recruitment Notice Info not found' });
         }
-        res.json(recruitmentNoticeInfo);
+
+        // companyName을 이용해 Company 모델에서 일치하는 튜플을 찾음
+        const company = await Company.findOne({
+            where: { companyName: recruitmentNoticeInfo.companyname }
+        });
+
+        // 두 개의 객체를 하나의 객체로 합쳐서 응답
+        res.status(200).json({ recruitmentNoticeInfo, company });
     } catch (error) {
         console.error('Error fetching recruitment notice info:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+// --------------------------------------------------------------------------------------------------------
 
 /**
  * 관심 채용공고 스크랩
