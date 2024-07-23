@@ -11,7 +11,7 @@ const getProfile = asyncHandler(async (req, res) => {
         attributes: { exclude: ['password'] },
         include: [{
             model: Scrap,
-            attributes: ['companyID'],
+            attributes: ['companyID'], // 🎨 3개 작업 해야함 (이 구조로)
             include: [{
                 model: Company,
                 attributes: ['companyName', 'establish', 'logo']
