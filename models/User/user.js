@@ -34,6 +34,11 @@ class User extends Sequelize.Model {
       job: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      isAdmin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false, // 기본값 false
+        allowNull: false
       }
     }, {
       sequelize,
