@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const User = require('../../models/User/user');
 const Company = require('../../models/Company/company');
 const Scrap = require('../../models/Scrap/scrap');
+const StudentSupportInfo = require('../../models/ITInfo/StudentSupportInfo/studentSupportInfoModel');
+const QualificationInfo = require('../../models/ITInfo/QualificationInfo/qualificationInfoModel');
+const RecruitmentNoticeInfo = require('../../models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
 
 // GET /api/profile
 const getProfile = asyncHandler(async (req, res) => {
@@ -11,11 +14,25 @@ const getProfile = asyncHandler(async (req, res) => {
         attributes: { exclude: ['password'] },
         include: [{
             model: Scrap,
-            attributes: ['companyID'], // 🎨 3개 작업 해야함 (이 구조로)
-            include: [{
-                model: Company,
-                attributes: ['companyName', 'establish', 'logo']
-            }]
+            attributes: ['companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey'],
+            include: [
+                {
+                    model: Company,
+                    attributes: ['companyName', 'establish', 'logo']
+                },
+                {
+                    model: StudentSupportInfo,
+                    attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+                },
+                {
+                    model: QualificationInfo,
+                    attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+                },
+                {
+                    model: RecruitmentNoticeInfo,
+                    attributes: ['title', 'body', 'experience', 'education', 'stack', 'work_type', 'companyname', 'startdate', 'enddate', 'pic1']
+                }
+            ]
         }]
     });
     if (!user) {
