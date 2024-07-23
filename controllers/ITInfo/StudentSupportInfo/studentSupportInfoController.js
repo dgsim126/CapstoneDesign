@@ -2,6 +2,7 @@
 const asyncHandler = require("express-async-handler");
 const StudentSupportInfo = require("../../../models/ITInfo/StudentSupportInfo/studentSupportInfoModel");
 const Scrap = require("../../../models/Scrap/scrap");
+const { Sequelize } = require('sequelize');
 
 /**
  * 모든 목록 가져오기 [학생지원]
@@ -10,10 +11,21 @@ const Scrap = require("../../../models/Scrap/scrap");
 const showAllList = asyncHandler(async (req, res) => {
     try {
         const studentSupportInfos = await StudentSupportInfo.findAll({
-            // 6개에 대한 정보들만 뽑아서 가져옴
-            attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+            attributes: [
+                'key', // 기본 키 컬럼
+                'title', 'body', 'agency', 'startdate', 'enddate', 'pic1',
+                [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount'] // 스크랩 수 계산
+            ],
+            include: [
+                {
+                    model: Scrap,
+                    attributes: [] // 실제 데이터는 필요 없으므로 빈 배열
+                }
+            ],
+            group: ['StudentSupportInfoModel.key'], // 기본 키 컬럼 기준 그룹화
+            raw: true
         });
-        res.status(200).json(studentSupportInfos); // 201은 잘 만들어졌을때의 응답
+        res.status(200).json(studentSupportInfos);
     } catch (error) {
         console.error('Error fetching student support info:', error);
         res.status(500).send('Internal Server Error');
@@ -29,11 +41,22 @@ const showDetailInfo = asyncHandler(async (req, res) => {
     
     try {
         const studentSupportInfo = await StudentSupportInfo.findOne({
-            where: { key }
+            where: { key },
+            include: [{
+                model: Scrap,
+                attributes: [] // 실제 데이터는 필요 없으므로 빈 배열
+            }],
+            attributes: {
+                // 모든 속성과 함께 스크랩 수를 포함
+                include: [
+                    [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount']
+                ]
+            },
+            group: ['StudentSupportInfoModel.key'] // 기본 키 컬럼 기준 그룹화
         });
+
         if (!studentSupportInfo) {
-            res.status(404).json({ message: 'Student Support Info not found' });
-            return;
+            return res.status(404).json({ message: 'Student Support Info not found' });
         }
         res.json(studentSupportInfo);
     } catch (error) {

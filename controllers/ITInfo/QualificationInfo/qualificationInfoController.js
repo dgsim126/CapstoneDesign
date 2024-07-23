@@ -2,6 +2,7 @@
 const asyncHandler = require("express-async-handler");
 const QualificationInfo = require("../../../models/ITInfo/QualificationInfo/qualificationInfoModel");
 const Scrap = require("../../../models/Scrap/scrap");
+const { Sequelize } = require('sequelize');
 
 /**
  * 모든 목록 가져오기 [자격증]
@@ -10,8 +11,19 @@ const Scrap = require("../../../models/Scrap/scrap");
 const showAllList = asyncHandler(async (req, res) => {
     try {
         const qualificationInfos = await QualificationInfo.findAll({
-            // 6개에 대한 정보들만 뽑아서 가져옴
-            attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+            attributes: [
+                'key', // 기본 키 컬럼
+                'title', 'body', 'agency', 'startdate', 'enddate', 'pic1',
+                [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount'] // 스크랩 수 계산
+            ],
+            include: [
+                {
+                    model: Scrap,
+                    attributes: [] // 실제 데이터는 필요 없으므로 빈 배열
+                }
+            ],
+            group: ['QualificationInfoModel.key'], // 기본 키 컬럼 기준 그룹화
+            raw: true
         });
         res.status(200).json(qualificationInfos);
     } catch (error) {
@@ -29,11 +41,22 @@ const showDetailInfo = asyncHandler(async (req, res) => {
     
     try {
         const qualificationInfo = await QualificationInfo.findOne({
-            where: { key }
+            where: { key },
+            include: [{
+                model: Scrap,
+                attributes: [] // 실제 데이터는 필요 없으므로 빈 배열
+            }],
+            attributes: {
+                // 모든 속성과 함께 스크랩 수를 포함
+                include: [
+                    [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount']
+                ]
+            },
+            group: ['QualificationInfoModel.key'] // 기본 키 컬럼 기준 그룹화
         });
+
         if (!qualificationInfo) {
-            res.status(404).json({ message: 'Qualification Info not found' });
-            return;
+            return res.status(404).json({ message: 'Qualification Info not found' });
         }
         res.json(qualificationInfo);
     } catch (error) {
