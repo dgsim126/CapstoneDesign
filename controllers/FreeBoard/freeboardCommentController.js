@@ -29,7 +29,9 @@ const showAll = asyncHandler(async (req, res) => {
 const createComment = asyncHandler(async (req, res) => {
     const { freeboardkey } = req.params;
     const { comment } = req.body; 
-    const id= "user123"; // id값은 쿠키를 통해 받아오도록 수정할 것
+    // const id= "user123"; // id값은 쿠키를 통해 받아오도록 수정할 것
+    const id= req.user.email;
+    console.log(id);
 
     try{
         const newData= await FreeboardComment.create({
@@ -49,8 +51,9 @@ const createComment = asyncHandler(async (req, res) => {
  */
 const deleteComment = asyncHandler(async (req, res) => {
     const { freeboardkey, commentkey }= req.params;
-    const id= "user123" // id값은 쿠키를 통해 받아오도록 수정할 것
-    
+    // const id= "user123" // id값은 쿠키를 통해 받아오도록 수정할 것
+    const id= req.user.email;
+
     try{
         const comment= await FreeboardComment.findOne({
             where:{
