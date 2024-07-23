@@ -16,16 +16,16 @@ const Studyboard = require('./models/StudyBoard/studyboard');
 const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
 // 모델 초기화 => 초기 한 번만 진행하면 테이블 갱신됨
-// User.init(sequelize);
-// Company.init(sequelize);
-// Scrap.init(sequelize);
-// StudentSupportInfo.init(sequelize);
-// QualificationInfo.init(sequelize);
-// RecruitmentNoticeInfo.init(sequelize);
-// Freeboard.init(sequelize);
-// FreeboardComment.init(sequelize);
-// Studyboard.init(sequelize);
-// StudyboardComment.init(sequelize);
+User.init(sequelize);
+Company.init(sequelize);
+Scrap.init(sequelize);
+StudentSupportInfo.init(sequelize);
+QualificationInfo.init(sequelize);
+RecruitmentNoticeInfo.init(sequelize);
+Freeboard.init(sequelize);
+FreeboardComment.init(sequelize);
+Studyboard.init(sequelize);
+StudyboardComment.init(sequelize);
 
 // 모델 간의 관계 설정
 User.associate({ Scrap });
