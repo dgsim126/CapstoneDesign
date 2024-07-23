@@ -42,7 +42,9 @@ const showDetail = asyncHandler(async (req, res) => {
  */
 const createPost = asyncHandler(async (req, res) => {
     const { title, body, pic1, pic2 }= req.body;
-    const id= "user123" // id값은 쿠키를 통해 받아오도록 수정할 것
+    // const id= "user123" // id값은 쿠키를 통해 받아오도록 수정할 것
+    const id= req.user.email;
+
     try{
         const newData= await StudyBoard.create({
             id,
@@ -66,7 +68,8 @@ const createPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { key } = req.params;
     const { title, body, pic1, pic2 }= req.body;
-    const id= "user123"; // 나중에 쿠키를 통해 받아올 것
+    // const id= "user123"; // 나중에 쿠키를 통해 받아올 것
+    const id= req.user.email;
 
     try{
         // 수정할 게시글 찾기
@@ -104,8 +107,8 @@ const updatePost = asyncHandler(async (req, res) => {
  */
 const deletePost = asyncHandler(async (req, res) => {
     const { key } = req.params;
-    const id = "user123"; // 현재 로그인한 사용자의 ID
-
+    // const id = "user123"; // 현재 로그인한 사용자의 ID
+    const id= req.user.email;
     try {
         // 삭제하려는 게시글 찾기
         const post = await StudyBoard.findOne({
