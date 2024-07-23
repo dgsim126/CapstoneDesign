@@ -90,6 +90,7 @@ app.use("/api/recruitmentNoticeInfo", require("./routers/ITInfo/RecruitmentNotic
 
 // 메인 캘린더
 app.use("/api/main", require("./routers/MainCalender/MainCalenderRoute"));
+app.use("/api/my", require("./routers/MyCalender/MyCalenderRoute"));
 
 // 서버 시작
 app.listen(port, () => {
