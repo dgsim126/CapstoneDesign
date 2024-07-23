@@ -15,7 +15,7 @@ const FreeboardComment = require('./models/FreeBoard/freeboardComment');
 const Studyboard = require('./models/StudyBoard/studyboard');
 const StudyboardComment = require('./models/StudyBoard/studyboardComment');
 
-// 모델 초기화 => 초기 한 번만 진행하면 scrap 테이블 갱신됨
+// 모델 초기화 => 초기 한 번만 진행하면 테이블 갱신됨
 User.init(sequelize);
 Company.init(sequelize);
 Scrap.init(sequelize);

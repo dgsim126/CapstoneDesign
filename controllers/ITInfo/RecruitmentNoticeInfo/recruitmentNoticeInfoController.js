@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const RecruitmentNoticeInfo = require("../../../models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel");
 const Company= require("../../../models/Company/company");
 const Scrap = require("../../../models/Scrap/scrap");
+const { Sequelize } = require('sequelize');
 
 /**
  * 모든 목록 가져오기 [채용공고]
@@ -11,9 +12,20 @@ const Scrap = require("../../../models/Scrap/scrap");
 const showAllList = asyncHandler(async (req, res) => {
     try {
         const recruitmentNoticeInfos = await RecruitmentNoticeInfo.findAll({
-            // 10개에 대한 정보들만 뽑아서 가져옴
-            attributes: ['title', 'body', 'experience', 'education', 'location',
-                         'work_type', 'companyname', 'startdate', 'enddate', 'pic1']
+            attributes: [
+                'key', // 기본 키 컬럼이 'key'
+                'title', 'body', 'experience', 'education', 'stack',
+                'work_type', 'companyname', 'startdate', 'enddate', 'pic1',
+                [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount'] // 스크랩 수 계산
+            ],
+            include: [
+                {
+                    model: Scrap,
+                    attributes: []
+                }
+            ],
+            group: ['RecruitmentNoticeInfoModel.key'], // 기본 키 컬럼 기준 그룹화
+            raw: true
         });
         res.status(200).json(recruitmentNoticeInfos);
     } catch (error) {
@@ -29,14 +41,25 @@ const showAllList = asyncHandler(async (req, res) => {
  */
 const showDetailInfo = asyncHandler(async (req, res) => {
     const { key } = req.params;
-    
+
     try {
+        // 채용 공고 정보와 스크랩 수를 포함하여 조회
         const recruitmentNoticeInfo = await RecruitmentNoticeInfo.findOne({
-            where: { key }
+            where: { key },
+            include: [{
+                model: Scrap,
+                attributes: [] // 실제 데이터는 필요 없으므로 빈 배열
+            }],
+            attributes: {
+                // 모든 속성과 함께 스크랩 수를 포함
+                include: [
+                    [Sequelize.fn('COUNT', Sequelize.col('Scraps.key')), 'scrapCount']
+                ]
+            },
+            group: ['RecruitmentNoticeInfoModel.key'] // 기본 키 컬럼 기준 그룹화
         });
         if (!recruitmentNoticeInfo) {
-            res.status(404).json({ message: 'Recruitment Notice Info not found' });
-            return;
+            return res.status(404).json({ message: 'Recruitment Notice Info not found' });
         }
 
         // companyName을 이용해 Company 모델에서 일치하는 튜플을 찾음
