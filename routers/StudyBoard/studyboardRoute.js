@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
+const verifyToken = require('../../middleware/token');
 const { 
     showAll, 
     showDetail, 
@@ -18,13 +19,13 @@ router.get('/', showAll);
 router.get('/:key', asyncHandler(showDetail));
 
 // 게시글 작성 내용을 DB에 넣기
-router.post('/create', asyncHandler(createPost));
+router.post('/create', verifyToken, asyncHandler(createPost));
 
 // 게시글 수정 내용을 DB에 넣기
-router.put('/update/:key', asyncHandler(updatePost));
+router.put('/update/:key', verifyToken, asyncHandler(updatePost));
 
 // 게시글 삭제
-router.delete('/delete/:key', asyncHandler(deletePost));
+router.delete('/delete/:key', verifyToken, asyncHandler(deletePost));
 
 
 module.exports = router;
