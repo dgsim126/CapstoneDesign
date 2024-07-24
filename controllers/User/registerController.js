@@ -5,10 +5,12 @@ const bcrypt = require('bcrypt');
 // POST /api/register
 const register = asyncHandler(async (req, res) => {
   const { email, password, name, birth, gender, job, accessAsAdmin } = req.body;
+  console.log("프론트로부터 값을 받음");
 
   // 이미 존재하는 이메일인지 확인
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
+    console.log("이미존재")
     return res.status(400).send('Email already in use');
   }
 
@@ -29,6 +31,8 @@ const register = asyncHandler(async (req, res) => {
     job,
     isAdmin
   });
+
+  console.log("데이터베이스에 값 넣음");
 
   const message = isAdmin ? 'Admin registration successful' : 'Registration successful';
 
