@@ -105,6 +105,3 @@ const showAll = asyncHandler(async (req, res) => {
 });
 
 module.exports = { showAll };
-
-
-module.exports = { showAll };
