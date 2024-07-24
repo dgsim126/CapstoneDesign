@@ -32,9 +32,8 @@ const login = asyncHandler(async (req, res) => {
   const message = user.isAdmin ? 'Login successful as admin' : 'Login successful';
 
   // 로그인 성공 및 토큰 반환
-  res.json({
-    message
-  });
+
+  res.status(200).json(message);
 });
 
 // POST /api/logout
