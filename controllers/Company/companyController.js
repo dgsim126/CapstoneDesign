@@ -20,7 +20,7 @@ const getCompanies = asyncHandler(async (req, res) => {
         }],
         group: ['Company.companyID'],
     });
-    res.json(companies);
+    res.status(200).json(companies);
 });
 
 // GET api/company/:companyID
@@ -42,7 +42,7 @@ const getCompanyById = asyncHandler(async (req, res) => {
     if (!company) {
       return res.status(404).send('Company not found');
     }
-    res.json(company);
+    res.status(200).json(company);
 });
 
 // POST /api/company/:companyID/scrap

@@ -39,7 +39,7 @@ const login = asyncHandler(async (req, res) => {
 // POST /api/logout
 const logout = (req, res) => {
   res.clearCookie("token");
-  res.send("Logout successful");
+  res.status(200).send("Logout successful");
 };
 
 module.exports = { login, logout };
