@@ -45,7 +45,7 @@ const port = 8080;
 
 // 데이터베이스 연결
 sequelize
-.sync({ force: false }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
+.sync({ force: true }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
 .then(()=>{
     console.log('데이터베이스 연결 성공');
     
@@ -61,9 +61,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
-
-// 기본 라우트 => routers 폴더로 이동
-app.use("/", require("./routers/main"));
 
 // 회원가입, 로그인, 로그아웃, 프로필
 app.use('/api/register', require('./routers/User/registerRoute'));
@@ -87,6 +84,9 @@ app.use("/api/admin/studyboard", require("./routers/admin/studyboardAdminRoute")
 app.use("/api/studentSupportInfo", require("./routers/ITInfo/StudentSupportInfo/studentSupportInfoRoute"));
 app.use("/api/qualificationInfo", require("./routers/ITInfo/QualificationInfo/qualificationInfoRoute"));
 app.use("/api/recruitmentNoticeInfo", require("./routers/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoRoute"));
+
+// 메인 페이지
+// app.use('/api', require("./routers/Main/mainRoute"));
 
 // 메인 캘린더
 app.use("/api/main", require("./routers/MainCalender/MainCalenderRoute"));
