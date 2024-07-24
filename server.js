@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
+const cors = require('cors'); // cors 추가
+
 const User = require('./models/User/user');
 const Company = require('./models/Company/company');
 const Scrap = require('./models/Scrap/scrap');
@@ -61,6 +63,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
+
+app.use(cors()); // cors 추가
 
 // 회원가입, 로그인, 로그아웃, 프로필
 app.use('/api/register', require('./routers/User/registerRoute'));
