@@ -36,9 +36,8 @@ const register = asyncHandler(async (req, res) => {
 
   const message = isAdmin ? 'Admin registration successful' : 'Registration successful';
 
-  res.json({
-    message: message
-  });
+  res.status(200).json(message);
+
 });
 
 module.exports = { register };
