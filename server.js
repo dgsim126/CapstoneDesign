@@ -86,7 +86,7 @@ app.use("/api/qualificationInfo", require("./routers/ITInfo/QualificationInfo/qu
 app.use("/api/recruitmentNoticeInfo", require("./routers/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoRoute"));
 
 // 메인 페이지
-app.use('/api', require("./routers/Main/mainRoute"));
+// app.use('/api', require("./routers/Main/mainRoute"));
 
 // 메인 캘린더
 app.use("/api/main", require("./routers/MainCalender/MainCalenderRoute"));
