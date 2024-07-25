@@ -60,8 +60,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // 미들웨어 설정
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
+//app.use(express.json());
+//app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
+app.use(express.json({ limit: '10mb' })); // !!!!!!! 수정 !!!!! 요청 본문 크기 제한 설정 (10MB)
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // !!!!!!! 수정 !!!!! URL-encoded 데이터 크기 제한 설정 (10MB)
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
 
 app.use(cors()); // cors 추가

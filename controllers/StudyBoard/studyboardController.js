@@ -4,6 +4,24 @@ const StudyBoardComment = require("../../models/StudyBoard/studyboardComment"); 
 // const bcrypt = require("bcrypt");
 
 /**
+ * Base64 문자열을 바이너리 데이터로 변환
+ * @param {string} base64String - Base64로 인코딩된 문자열
+ * @returns {Buffer} - 변환된 바이너리 데이터
+ */
+const base64ToBinary = (base64String) => {
+    return Buffer.from(base64String, 'base64');
+};
+
+/**
+ * 바이너리 데이터를 Base64 문자열로 변환
+ * @param {Buffer} binaryData - 바이너리 데이터
+ * @returns {string} - Base64 문자열
+ */
+const binaryToBase64 = (binaryData) => {
+    return binaryData.toString('base64');
+};
+
+/**
  * 모든 게시글 가져오기
  * GET /api/studyboard
  */
@@ -29,6 +47,11 @@ const showDetail = asyncHandler(async (req, res) => {
             res.status(404);
             return;
         }
+         
+        // 바이너리 데이터를 Base64 문자열로 변환
+        if (data.pic1) data.pic1 = binaryToBase64(data.pic1);
+        if (data.pic2) data.pic2 = binaryToBase64(data.pic2);
+        
         res.status(200).json(data);
     }catch(error){
         console.error(error);
@@ -46,12 +69,16 @@ const createPost = asyncHandler(async (req, res) => {
     const id= req.user.email;
 
     try{
+        // Base64 문자열을 바이너리 데이터로 변환
+        const pic1Binary = pic1 ? base64ToBinary(pic1) : null;
+        const pic2Binary = pic2 ? base64ToBinary(pic2) : null;
+
         const newData= await StudyBoard.create({
             id,
             title,
             body,
-            pic1,
-            pic2
+            pic1: pic1Binary,
+            pic2: pic2Binary
         })
         res.status(201).json(newData);
         // 새로 생성된 레코드를 JSON 형태로 반환 (기본키와 기본값 포함)
@@ -83,6 +110,10 @@ const updatePost = asyncHandler(async (req, res) => {
             return res.status(403).json({ message: "수정 권한이 없음" });
         }
 
+        // Base64 문자열을 바이너리 데이터로 변환
+        const pic1Binary = pic1 ? base64ToBinary(pic1) : post.pic1;
+        const pic2Binary = pic2 ? base64ToBinary(pic2) : post.pic2;
+
         // 게시글 수정
         const updateData= await StudyBoard.update({
             title,
@@ -95,8 +126,14 @@ const updatePost = asyncHandler(async (req, res) => {
 
         // 수정된 데이터 다시 불러오기
         const afterUpdated= await StudyBoard.findByPk(key);
+
+        // 바이너리 데이터를 Base64 문자열로 변환
+        if (afterUpdated.pic1) afterUpdated.pic1 = binaryToBase64(afterUpdated.pic1);
+        if (afterUpdated.pic2) afterUpdated.pic2 = binaryToBase64(afterUpdated.pic2);
+
         res.status(200).json(afterUpdated);
     }catch(error){
+        console.log(error);
         res.status(500);
     }
 });
