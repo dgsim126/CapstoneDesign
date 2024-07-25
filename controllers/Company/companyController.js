@@ -45,10 +45,23 @@ const getCompanyById = asyncHandler(async (req, res) => {
       },
       group: ['Company.companyID']
     });
+
     if (!company) {
       return res.status(404).send('Company not found');
     }
-    res.status(200).json(company);
+
+    // track과 stack 필드를 배열로 변환
+    const tracks = company.track ? company.track.split(',') : [];
+    const stacks = company.stack ? company.stack.split(',') : [];
+
+    // JSON 응답에 track과 stack 배열 포함
+    const companyData = {
+      ...company.toJSON(),
+      track: tracks,
+      stack: stacks
+    };
+
+    res.status(200).json(companyData);
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
@@ -140,6 +153,10 @@ const createCompany = asyncHandler(async (req, res) => {
       return res.status(400).json({ message: 'Company name and body are required' });
     }
 
+    // track과 stack이 배열로 전달된 경우 쉼표로 구분된 문자열로 변환
+    const trackString = Array.isArray(track) ? track.join(',') : track;
+    const stackString = Array.isArray(stack) ? stack.join(',') : stack;
+
     // 새로운 회사 데이터 생성
     const newCompany = await Company.create({
       companyName,
@@ -151,8 +168,8 @@ const createCompany = asyncHandler(async (req, res) => {
       pic4,
       pic5,
       body,
-      track,
-      stack,
+      track: trackString,
+      stack: stackString,
       welfare,
       salary,
       location,

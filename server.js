@@ -45,6 +45,8 @@ StudyboardComment.associate({ Studyboard });
 const app = express();
 const port = 8080;
 
+app.use(cors()); // cors 추가
+
 // 데이터베이스 연결
 sequelize
 .sync({ force: true }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
@@ -65,8 +67,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.json({ limit: '10mb' })); // !!!!!!! 수정 !!!!! 요청 본문 크기 제한 설정 (10MB)
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // !!!!!!! 수정 !!!!! URL-encoded 데이터 크기 제한 설정 (10MB)
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
-
-app.use(cors()); // cors 추가
 
 // 회원가입, 로그인, 로그아웃, 프로필
 app.use('/api/register', require('./routers/User/registerRoute'));
