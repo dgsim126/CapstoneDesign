@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany, deleteCompany } = require('../../controllers/Company/companyController');
-const verifyToken = require('../../middleware/token');
+const {verifyToken} = require('../../middleware/token');
 
 // GET api/company
 router.get('/', getCompanies);
