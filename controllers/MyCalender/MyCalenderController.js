@@ -81,7 +81,8 @@ const showAll = asyncHandler(async (req, res) => {
  */
 const google = asyncHandler(async (req, res) => {
 
-    console.log("이거 안나오면 경로 문제");
+    console.log("Starting google function");
+
     try {
         const userID = req.user.userID;
 
@@ -168,8 +169,8 @@ const google = asyncHandler(async (req, res) => {
             }
         }
 
-        //res.status(200).json(combinedData);
-        res.status(200);
+        // 클라이언트에게 응답을 보내기
+        res.status(200).json({ message: "Events processed and added to Google Calendar." });
     } catch (error) {
         console.error('Error in google function:', error);
         res.status(500).json({ message: "서버 오류가 발생했습니다." });
