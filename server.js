@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
+// 모델 초기화 및 관계 설정
 const User = require('./models/User/user');
 const Company = require('./models/Company/company');
 const Scrap = require('./models/Scrap/scrap');
@@ -39,17 +40,16 @@ FreeboardComment.associate({ Freeboard });
 Studyboard.associate({ StudyboardComment });
 StudyboardComment.associate({ Studyboard });
 
-
 const app = express();
 const port = 8080;
 
 // 데이터베이스 연결
 sequelize
 .sync({ force: false }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
-.then(()=>{
+.then(() => {
     console.log('데이터베이스 연결 성공');
-    
-}).catch(err=>{
+})
+.catch(err => {
     console.log(err);
 });
 
@@ -62,7 +62,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
 
-// 기본 라우트 => routers 폴더로 이동
+// 기본 라우트
 app.use("/", require("./routers/main"));
 
 // 회원가입, 로그인, 로그아웃, 프로필
@@ -91,6 +91,9 @@ app.use("/api/recruitmentNoticeInfo", require("./routers/ITInfo/RecruitmentNotic
 // 메인 캘린더
 app.use("/api/main", require("./routers/MainCalender/MainCalenderRoute"));
 app.use("/api/my", require("./routers/MyCalender/MyCalenderRoute"));
+
+// 인증 라우트 추가
+app.use('/api/auth', require("./routers/google/authRoute"));
 
 // 서버 시작
 app.listen(port, () => {
