@@ -1,7 +1,7 @@
 // StudentSupportInfo 라우트코드
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../../../middleware/token');
+const {verifyToken} = require('../../../middleware/token');
 const {
     showAllList,
     showDetailInfo,
