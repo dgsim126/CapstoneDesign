@@ -45,7 +45,10 @@ StudyboardComment.associate({ Studyboard });
 const app = express();
 const port = 8080;
 
-app.use(cors()); // cors 추가
+app.use(cors({
+    origin: true, // 모든 도메인 허용
+    credentials: true // 쿠키를 포함한 요청을 허용
+}));
 
 // 데이터베이스 연결
 sequelize
