@@ -13,6 +13,7 @@ const showAll = asyncHandler(async (req, res) => {
     console.log(id);
 
     try {
+        
         // 게시글 작성자 ID 가져오기
         const studyboard = await Studyboard.findByPk(studyboardkey, {
             attributes: ['id'],
