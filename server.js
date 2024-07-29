@@ -4,6 +4,9 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { sequelize } = require("./config/db");
 
+const cors = require('cors'); // cors 추가
+
+
 // 모델 초기화 및 관계 설정
 const User = require('./models/User/user');
 const Company = require('./models/Company/company');
@@ -43,9 +46,14 @@ StudyboardComment.associate({ Studyboard });
 const app = express();
 const port = 8080;
 
+app.use(cors({
+    origin: true, // 모든 도메인 허용
+    credentials: true // 쿠키를 포함한 요청을 허용
+}));
+
 // 데이터베이스 연결
 sequelize
-.sync({ force: false }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
+.sync({ force: true }) // 현재 모델 상태 반영(배포 시 false로 변환) // true 시 값 날라감
 .then(() => {
     console.log('데이터베이스 연결 성공');
 })
@@ -58,8 +66,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // 미들웨어 설정
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
+//app.use(express.json());
+//app.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱
+app.use(express.json({ limit: '10mb' })); // !!!!!!! 수정 !!!!! 요청 본문 크기 제한 설정 (10MB)
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // !!!!!!! 수정 !!!!! URL-encoded 데이터 크기 제한 설정 (10MB)
 app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
 
 // 기본 라우트
@@ -87,6 +97,9 @@ app.use("/api/admin/studyboard", require("./routers/admin/studyboardAdminRoute")
 app.use("/api/studentSupportInfo", require("./routers/ITInfo/StudentSupportInfo/studentSupportInfoRoute"));
 app.use("/api/qualificationInfo", require("./routers/ITInfo/QualificationInfo/qualificationInfoRoute"));
 app.use("/api/recruitmentNoticeInfo", require("./routers/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoRoute"));
+
+// 메인 페이지
+// app.use('/api', require("./routers/Main/mainRoute"));
 
 // 메인 캘린더
 app.use("/api/main", require("./routers/MainCalender/MainCalenderRoute"));

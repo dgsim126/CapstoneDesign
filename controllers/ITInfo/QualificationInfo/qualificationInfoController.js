@@ -59,7 +59,7 @@ const showDetailInfo = asyncHandler(async (req, res) => {
         if (!qualificationInfo) {
             return res.status(404).json({ message: 'Qualification Info not found' });
         }
-        res.json(qualificationInfo);
+        res.status(200).json(qualificationInfo);
     } catch (error) {
         console.error('Error fetching qualification info:', error);
         res.status(500).send('Internal Server Error');

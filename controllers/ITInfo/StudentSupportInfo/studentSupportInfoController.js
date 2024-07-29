@@ -59,7 +59,7 @@ const showDetailInfo = asyncHandler(async (req, res) => {
         if (!studentSupportInfo) {
             return res.status(404).json({ message: 'Student Support Info not found' });
         }
-        res.json(studentSupportInfo);
+        res.status(200).json(studentSupportInfo);
     } catch (error) {
         console.error('Error fetching student support info:', error);
         res.status(500).send('Internal Server Error');

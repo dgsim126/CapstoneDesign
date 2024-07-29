@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const { getCompanies, getCompanyById, scrapCompany, deleteScrap, createCompany, deleteCompany, searchByCompanyName } = require('../../controllers/Company/companyController');
-const verifyToken = require('../../middleware/token');
+const {verifyToken} = require('../../middleware/token');
 
 // GET api/company
 router.get('/', getCompanies);

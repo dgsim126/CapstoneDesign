@@ -11,71 +11,70 @@ const RecruitmentNoticeInfo = require('../../models/ITInfo/RecruitmentNoticeInfo
 
 // GET /api/profile
 const getProfile = asyncHandler(async (req, res) => {
-    const id = req.user.userID;  // 모델의 primary key 필드명 사용
-    const user = await User.findByPk(id, {
-        attributes: { exclude: ['password'] },
-        include: [{
-            model: Scrap,
-            attributes: ['companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey'],
-            include: [
-                {
-                    model: Company,
-                    attributes: ['companyName', 'establish', 'logo']
-                },
-                {
-                    model: StudentSupportInfo,
-                    attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
-                },
-                {
-                    model: QualificationInfo,
-                    attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
-                },
-                {
-                    model: RecruitmentNoticeInfo,
-                    attributes: ['title', 'body', 'experience', 'education', 'stack', 'work_type', 'companyname', 'startdate', 'enddate', 'pic1']
-                }
-            ]
-        }]
-    });
+    try {
+        const id = req.user.userID;  // 모델의 primary key 필드명 사용
+        const user = await User.findByPk(id, {
+            attributes: { exclude: ['password'] },
+            include: [{
+                model: Scrap,
+                attributes: ['companyID', 'studentSupportInfoKey', 'qualificationInfoKey', 'recruitmentNoticeInfoKey'],
+                include: [
+                    {
+                        model: Company,
+                        attributes: ['companyName', 'establish', 'logo']
+                    },
+                    {
+                        model: StudentSupportInfo,
+                        attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+                    },
+                    {
+                        model: QualificationInfo,
+                        attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
+                    },
+                    {
+                        model: RecruitmentNoticeInfo,
+                        attributes: ['title', 'body', 'experience', 'education', 'stack', 'work_type', 'companyname', 'startdate', 'enddate', 'pic1']
+                    }
+                ]
+            }]
+        });
 
-    if (!user) {
-        res.status(404).send('User not found');
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        const email = user.email;
+
+        const freeboardPosts = await Freeboard.findAll({
+            where: { id: email }
+        });
+        
+        const studyboardPosts = await Studyboard.findAll({
+            where: { id: email }
+        });
+        
+        res.status(200).json({
+            user,
+            freeboardPosts,
+            studyboardPosts
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
-
-    const email = user.email;
-
-    const freeboardPosts = await Freeboard.findAll({
-        where: { id: email }
-    });
-    
-    const studyboardPosts = await Studyboard.findAll({
-        where: { id: email }
-    });
-    
-    res.status(200).json({
-        user,
-        freeboardPosts,
-        studyboardPosts
-    });
 });
 
 // PUT /api/profile/edit
 const updateProfile = asyncHandler(async (req, res) => {
-    const id = req.user.userID;  // 모델의 primary key 필드명 사용
-    const { name, password, birth, gender, job } = req.body;
+    try {
+        const id = req.user.userID;  // 모델의 primary key 필드명 사용
+        const { name, password, birth, gender, job } = req.body;
 
-    // if (email) { // 이메일 중복 확인
-    //     const existingUser = await User.findOne({ where: { email } });
-    //     if (existingUser && existingUser.userID !== id) {
-    //         return res.status(400).send('Email already in use');
-    //     }
-    // }
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
 
-    const user = await User.findByPk(id);
-    if (!user) {
-        res.status(404).send('User not found');
-    } else { // 수정을 한 속성들만 업데이트, 안 한 속성들은 그대로 유지
-        // if (email) user.email = email; 이메일은 변경 안됨
         if (name) user.name = name;
         if (birth) user.birth = birth;
         if (gender) user.gender = gender;
@@ -84,20 +83,29 @@ const updateProfile = asyncHandler(async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             user.password = hashedPassword;
         }
+        
         await user.save();
         res.status(200).send('Edit Success');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
 });
 
 // DELETE /api/profile
 const deleteProfile = asyncHandler(async (req, res) => {
-    const id = req.user.userID;  // 모델의 primary key 필드명 사용
-    const user = await User.findByPk(id);
-    if (!user) {
-        res.status(404).send('User not found');
-    } else {
+    try {
+        const id = req.user.userID;  // 모델의 primary key 필드명 사용
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        
         await user.destroy();
         res.status(200).send('Delete Success');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
 });
 
