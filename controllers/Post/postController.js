@@ -120,28 +120,28 @@ const createPost = asyncHandler(async (req, res) => {
  * DELETE /api/delete/:post_key
  */
 const deletePost = asyncHandler(async (req, res) => {
-    const { key } = req.params;
-    const id = req.user.email;  // 쿠키로부터일걸?
+    const { post_key } = req.params; // URL에서 post_key 추출
+    const user_key = req.user.userID;  // 쿠키에서 추출된 userID
 
     try {
         // 삭제하려는 게시글 찾기
         const post = await Post.findOne({
-            where: { key }
+            where: { post_key }
         });
 
         // 게시글이 없는 경우
         if (!post) {
-            return res.status(404).json({ message: "수정할 게시글을 찾을 수 없음." });
+            return res.status(404).json({ message: "삭제할 게시글을 찾을 수 없음." });
         }
 
         // 게시글 작성자와 현재 사용자가 다른 경우
-        if (post.id !== id) {
-            return res.status(403).json({ message: "수정 권한이 없음." });
+        if (post.user_key !== user_key) {
+            return res.status(403).json({ message: "삭제 권한이 없음." });
         }
 
-        // 연결된 댓글 모두 삭제
-        await FreeBoardComment.destroy({
-            where: { freeboardkey: key }
+        // 연결된 댓글 모두 삭제 (연결된 댓글이 있을 경우)
+        await Post.destroy({
+            where: { post_key }  // 댓글의 외래키로 post_key를 참조
         });
 
         // 게시글 삭제
