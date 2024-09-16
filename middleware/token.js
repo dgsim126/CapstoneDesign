@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, jwtSecret);
         console.log('Decoded Token:', decoded); // 로그 추가
-        req.user = { userID: decoded.userID, email: decoded.email };
+        req.user = { userID: decoded.userID, user_key: decoded.user_key };
         next();
     } catch (error) {
         res.status(400).json({ message: "Invalid Token" });

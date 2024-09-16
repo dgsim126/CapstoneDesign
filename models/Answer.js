@@ -41,6 +41,7 @@ class Answer extends Sequelize.Model {
   static associate(models) {
     this.belongsTo(models.Problem, {
       foreignKey: 'problem_key',
+      as: 'problem',  // ############ 수정 ############ alias를 'problem'으로 설정
       onDelete: 'CASCADE',
     });
   }

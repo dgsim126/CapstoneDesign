@@ -37,10 +37,12 @@ class Problem extends Sequelize.Model {
   static associate(models) {
     this.belongsTo(models.Post, {
       foreignKey: 'post_key',
+      as: 'post',  // ############ 수정 ############ alias를 'post'로 설정
       onDelete: 'CASCADE',
     });
     this.hasMany(models.Answer, {
       foreignKey: 'problem_key',
+      as: 'answers',  // ############ 수정 ############ alias를 'answers'로 설정
       onDelete: 'CASCADE',
     });
   }

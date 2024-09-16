@@ -43,6 +43,8 @@ class Post extends Sequelize.Model {
       onDelete: 'CASCADE',
     });
     this.hasMany(models.Problem, {
+      as: 'problems',  // ############ 수정 ############ alias를 'problems'로 설정
+      foreignKey: 'post_key',
       foreignKey: 'post_key',
       onDelete: 'CASCADE',
     });
