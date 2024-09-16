@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const jwtSecret = process.env.JWT_SECRET;
 
-// POST /api/login
+/**
+ * 로그인
+ * POST /api/login
+ */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 

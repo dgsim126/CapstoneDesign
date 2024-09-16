@@ -3,7 +3,7 @@ const router = express.Router();
 const { getProfile, updateProfile, deleteProfile, getUserName } = require('../../controllers/User/profileController');
 const { verifyToken } = require('../../middleware/token');
 
-// GET /api/profile
+// GET /api/my
 router.get('/', verifyToken, getProfile);
 
 //GET /api/profile/name
