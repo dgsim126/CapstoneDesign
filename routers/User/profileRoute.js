@@ -6,7 +6,7 @@ const { verifyToken } = require('../../middleware/token');
 // GET /api/my
 router.get('/', verifyToken, getProfile);
 
-// PUT /api/profile/edit
-router.put('/edit', verifyToken, updateProfile);
+// PUT /api/my/update
+router.put('/update', verifyToken, updateProfile);
 
 module.exports = router;
