@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const User = require('../../models/User/user');
+const User = require('../../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -10,13 +10,13 @@ const jwtSecret = process.env.JWT_SECRET;
  * POST /api/login
  */
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { id, password } = req.body;
 
   try {
     // 사용자가 입력한 이메일로 데이터베이스에서 사용자 찾기
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { id } });
     if (!user) {
-      return res.status(401).send('Invalid email or password');
+      return res.status(401).send('Invalid id or password');
     }
 
     // 비밀번호 비교
