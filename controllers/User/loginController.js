@@ -26,14 +26,14 @@ const login = asyncHandler(async (req, res) => {
     }
 
     // JWT 토큰 생성
-    const payload = { userID: user.userID, email: user.email, isAdmin: user.isAdmin };
+    const payload = { userID: user.user_key };
     const token = jwt.sign(payload, jwtSecret, { expiresIn: '24h' });
 
     // JWT 토큰을 쿠키에 설정
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true, // HTTPS가 아닌 경우 false로 설정 - [로컬 테스트 시 주석처리]
-      sameSite: 'None' // 크로스 도메인 쿠키 전송 허용 - [로컬 테스트 시 주석처리]
+      // secure: true, // HTTPS가 아닌 경우 false로 설정 - [로컬 테스트 시 주석처리]
+      // sameSite: 'None' // 크로스 도메인 쿠키 전송 허용 - [로컬 테스트 시 주석처리]
     });
 
     const message = user.isAdmin ? 'Login successful as admin' : 'Login successful';
@@ -46,7 +46,10 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
-// POST /api/logout
+/**
+ * 로그아웃
+ * POST /api/logout
+ */
 const logout = (req, res) => {
   try {
     res.clearCookie("token", {

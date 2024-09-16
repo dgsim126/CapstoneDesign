@@ -1,122 +1,23 @@
 const asyncHandler = require("express-async-handler");
 const { sequelize } = require("../../config/db");
 const bcrypt = require("bcrypt");
-const User = require('../../models/User/user');
-const Freeboard = require('../../models/FreeBoard/freeboard');
-const Studyboard = require('../../models/StudyBoard/studyboard');
-const Company = require('../../models/Company/company');
-const Scrap = require('../../models/Scrap/scrap');
-const StudentSupportInfo = require('../../models/ITInfo/StudentSupportInfo/studentSupportInfoModel');
-const QualificationInfo = require('../../models/ITInfo/QualificationInfo/qualificationInfoModel');
-const RecruitmentNoticeInfo = require('../../models/ITInfo/RecruitmentNoticeInfo/recruitmentNoticeInfoModel');
+const User = require('../../models/User');
 const { Sequelize } = require("sequelize");
 
-// GET /api/profile
+/**
+ * 내 정보 가져오기(마이페이지)
+ * GET /api/my
+ */
 const getProfile = asyncHandler(async (req, res) => {
     try {
-        const id = req.user.userID;
-
-        // 사용자 정보와 스크랩 수를 함께 가져옴
-        const user = await User.findByPk(id, {
-            attributes: { exclude: ['password'] },
-            include: [{
-                model: Scrap,
-                as: 'Scraps', // 명확한 별칭 설정
-                attributes: [
-                    'companyID', 
-                    'studentSupportInfoKey', 
-                    'qualificationInfoKey', 
-                    'recruitmentNoticeInfoKey',
-                    [
-                        sequelize.literal(`(
-                            SELECT COUNT(*)
-                            FROM scrap AS s
-                            WHERE s.companyID = Scraps.companyID
-                        )`), 'companyScrapCount'
-                    ],
-                    [
-                        sequelize.literal(`(
-                            SELECT COUNT(*)
-                            FROM scrap AS s
-                            WHERE s.studentSupportInfoKey = Scraps.studentSupportInfoKey
-                        )`), 'studentSupportScrapCount'
-                    ],
-                    [
-                        sequelize.literal(`(
-                            SELECT COUNT(*)
-                            FROM scrap AS s
-                            WHERE s.qualificationInfoKey = Scraps.qualificationInfoKey
-                        )`), 'qualificationScrapCount'
-                    ],
-                    [
-                        sequelize.literal(`(
-                            SELECT COUNT(*)
-                            FROM scrap AS s
-                            WHERE s.recruitmentNoticeInfoKey = Scraps.recruitmentNoticeInfoKey
-                        )`), 'recruitmentNoticeScrapCount'
-                    ]
-                ],
-                include: [
-                    {
-                        model: Company,
-                        attributes: ['companyName', 'establish', 'logo', 'track', 'stack']
-                    },
-                    {
-                        model: StudentSupportInfo,
-                        attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
-                    },
-                    {
-                        model: QualificationInfo,
-                        attributes: ['title', 'body', 'agency', 'startdate', 'enddate', 'pic1']
-                    },
-                    {
-                        model: RecruitmentNoticeInfo,
-                        attributes: ['title', 'body', 'experience', 'education', 'stack', 'work_type', 'companyname', 'startdate', 'enddate', 'pic1', 'recruit_part']
-                    }
-                ]
-            }],
-            group: ['User.userID', 'Scraps.key'] // 각 사용자의 스크랩을 그룹화
-        });
-
-        if (!user) {
-            return res.status(404).send('User not found');
+        const id= req.user.userID
+        const user = await User.findByPk(id);
+        if (user) {
+            res.status(200).json({ id: user.id, name: user.name, age: user.age });
+        } else {
+            res.status(404).json({ error: 'User not found' });
         }
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 수정!!!!!!!!!!!!!!!!!
-        const transformStackToArray = (stackString) => {
-            return stackString ? stackString.split(',').map(item => item.trim()) : [];
-        };
-
-        const transformedUser = {
-            ...user.toJSON(),
-            Scraps: user.Scraps.map(scrap => ({
-                ...scrap.toJSON(),
-                Company: scrap.Company ? {
-                    ...scrap.Company,
-                    stack: transformStackToArray(scrap.Company.stack)
-                } : null,
-                RecruitmentNoticeInfoModel: scrap.RecruitmentNoticeInfoModel ? {
-                    ...scrap.RecruitmentNoticeInfoModel,
-                    stack: transformStackToArray(scrap.RecruitmentNoticeInfoModel.stack)
-                } : null
-            }))
-        };
-
-        const email = user.email;
-
-        const freeboardPosts = await Freeboard.findAll({
-            where: { id: email }
-        });
-
-        const studyboardPosts = await Studyboard.findAll({
-            where: { id: email }
-        });
-
-        res.status(200).json({
-            user: transformedUser, // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 수정!!!!!!!!!!!!!!!!!
-            freeboardPosts,
-            studyboardPosts
-        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');

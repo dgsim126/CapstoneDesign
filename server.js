@@ -59,7 +59,7 @@ app.use(cookieParser()); // 쿠키 파서 미들웨어 추가
 // 회원가입, 로그인, 로그아웃, 프로필, 현재 로그인중인 사용자의 이름만 반환
 app.use("/api", require("./routers/User/loginRoute"))
 app.use("/api/register", require("./routers/User/registerRoute"));
-app.use("/api/my", require("./routers/Post/post"));
+app.use("/api/my", require("./routers/User/profileRoute"));
 app.use("/api/post", require("./routers/Post/post"));
 
 // 서버 시작
