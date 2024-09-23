@@ -5,6 +5,7 @@ const {verifyToken} = require('../../middleware/token');
 const { 
     showAll, 
     showDetail, 
+    showGameDetail,
     createPost,  
     deletePost
 } = require('../../controllers/Post/postController');
@@ -16,7 +17,7 @@ router.get('/', asyncHandler(showAll));
 router.get('/:post_key', asyncHandler(showDetail));
 
 // 게시글 내 게임시작
-router.post('/:post_key/game', asyncHandler());
+router.get('/:post_key/game', asyncHandler(showGameDetail));
 
 // 게시글 작성
 router.post('/create', verifyToken, asyncHandler(createPost));

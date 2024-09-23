@@ -59,9 +59,41 @@ const showDetail = asyncHandler(async (req, res) => {
 
 /**
  * 게시글 내 게임시작
- * POST /api/:post_key/game
+ * GET /api/:post_key/game
  */
+const showGameDetail = asyncHandler(async (req, res) => {
+    const { post_key } = req.params;  // URL에서 post_key 추출
 
+    try {
+        // Post와 관련된 Problem 및 Answer를 포함하여 조회
+        const post = await Post.findOne({
+            where: { post_key }, // 해당 post_key에 맞는 게시글 조회
+            include: [
+                {
+                    model: Problem,
+                    as: 'problems',  // ############ 수정 ############ 모델의 alias 'problems'와 일치시킴
+                    include: [
+                        {
+                            model: Answer,
+                            as: 'answers'  // ############ 수정 ############ 모델의 alias 'answers'와 일치시킴
+                        }
+                    ]
+                }
+            ]
+        });
+
+        // 게시글이 존재하지 않으면 404 반환
+        if (!post) {
+            return res.status(404).json({ message: "게시글을 찾을 수 없습니다." });
+        }
+
+        // 성공적으로 데이터를 가져오면 반환
+        res.status(200).json(post);
+    } catch (error) {
+        console.error("Error retrieving post details:", error);
+        res.status(500).json({ message: "서버 에러." });
+    }
+});
 
 /**
  * 게시글 작성 
@@ -153,4 +185,4 @@ const deletePost = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { showAll, showDetail, createPost, deletePost };
+module.exports = { showAll, showDetail, showGameDetail, createPost, deletePost };
